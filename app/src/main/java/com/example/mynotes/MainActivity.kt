@@ -178,7 +178,17 @@ private fun NotesScreen(context: Context) {
                         if (draft.isEmpty()) Text("Start writing...", color = Color.LightGray)
                         BasicTextField(
                             value = draft,
-                            onValueChange = { draft = it; dirty = true; toast = "" },
+                           onValueChange = {
+    draft = it
+    dirty = true
+    toast = ""
+    val i = notes.indexOfFirst { note -> note.id == selectedId }
+    if (i >= 0) {
+        notes[i] = notes[i].copy(body = it)
+        persist(context, notes)
+        dirty = false
+    }
+},
                             modifier = Modifier.fillMaxSize(),
                            textStyle = TextStyle(
     fontSize = 16.sp,
@@ -190,41 +200,12 @@ private fun NotesScreen(context: Context) {
                         )
                     }
                 }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Button(onClick = { saveCurrent() }, enabled = dirty) {
-                        Icon(Icons.Default.Save, contentDescription = null)
-                        Spacer(Modifier.width(6.dp))
-                        Text("Save")
-                    }
-                }
+        
                 if (toast.isNotEmpty()) Text(toast, color = Color(0xFF388E3C), fontSize = 12.sp)
             }
         }
     }
 
-    if (showUnsaved) AlertDialog(
-        onDismissRequest = { showUnsaved = false; pendingSwitch = null },
-        title = { Text("Unsaved changes") },
-        text = { Text("Do you want to save your changes before leaving this note?") },
-        confirmButton = {
-            TextButton(onClick = {
-                saveCurrent()
-                showUnsaved = false
-                pendingSwitch?.let { switchNow(it) }
-                pendingSwitch = null
-            }) { Text("Save") }
-        },
-        dismissButton = {
-            Row {
-                TextButton(onClick = {
-                    showUnsaved = false
-                    pendingSwitch?.let { switchNow(it) }
-                    pendingSwitch = null
-                }) { Text("Discard") }
-                TextButton(onClick = { showUnsaved = false; pendingSwitch = null }) { Text("Cancel") }
-            }
-        }
-    )
 
     if (showNew) AlertDialog(
         onDismissRequest = { showNew = false },
