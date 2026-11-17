@@ -81,12 +81,27 @@ private fun NotesScreen(context: Context) {
     var deleteId by remember { mutableStateOf<String?>(null) }
     var toast by remember { mutableStateOf("") }
 
-    fun saveCurrent() {
-        val i = notes.indexOfFirst { it.id == selectedId }
-        if (i >= 0) notes[i] = notes[i].copy(body = draft)
-        persist(context, notes)
-        dirty = false
-        toast = "Saved"
+   fun saveCurrent(showMessage: Boolean = true) {
+    val i = notes.indexOfFirst { it.id == selectedId }
+    if (i >= 0) notes[i] = notes[i].copy(body = draft)
+    persist(context, notes)
+    dirty = false
+    if (showMessage) toast = "Saved"
+}
+
+fun switchNow(id: String) {
+    if (dirty) saveCurrent(showMessage = false)
+
+    val n = notes.firstOrNull { it.id == id } ?: return
+    selectedId = id
+    draft = n.body
+    dirty = false
+}
+
+fun askSwitch(id: String) {
+    if (id == selectedId) return
+    switchNow(id)
+}
     }
     fun switchNow(id: String) {
         val n = notes.firstOrNull { it.id == id } ?: return
