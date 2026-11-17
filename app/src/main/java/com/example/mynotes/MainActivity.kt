@@ -6,7 +6,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -143,10 +142,7 @@ DisposableEffect(Unit) {
     }
 
 
-    BackHandler(enabled = dirty) {
-        pendingSwitch = null
-        showUnsaved = true
-    }
+
 
     MaterialTheme {
         Scaffold(
