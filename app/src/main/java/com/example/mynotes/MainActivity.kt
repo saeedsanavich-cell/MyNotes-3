@@ -87,6 +87,17 @@ private fun persist(context: Context, notes: List<Note>) {
 @Composable
 private fun NotesScreen(context: Context) {
     val notes = remember { mutableStateListOf<Note>().apply { addAll(loadNotes(context)) } }
+    val activity = context as? MainActivity
+
+DisposableEffect(Unit) {
+    activity?.registerSaveAction {
+        persist(context, notes.toList())
+    }
+
+    onDispose {
+        activity?.registerSaveAction {}
+    }
+}
     var selectedId by remember { mutableStateOf(notes.first().id) }
     var draft by remember { mutableStateOf(notes.first().body) }
     var dirty by remember { mutableStateOf(false) }
