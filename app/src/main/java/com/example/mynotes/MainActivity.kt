@@ -1,5 +1,7 @@
 package com.example.mynotes
 
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.foundation.ExperimentalFoundationApi
 import android.content.Context
 import android.os.Bundle
@@ -187,7 +189,13 @@ fun askSwitch(id: String) {
                             value = draft,
                             onValueChange = { draft = it; dirty = true; toast = "" },
                             modifier = Modifier.fillMaxSize(),
-                            textStyle = TextStyle(fontSize = 16.sp, color = Color(0xFF222222), lineHeight = 24.sp)
+                           textStyle = TextStyle(
+    fontSize = 16.sp,
+    color = Color(0xFF222222),
+    lineHeight = 24.sp,
+    textAlign = TextAlign.Start,
+    textDirection = TextDirection.ContentOrRtl
+)
                         )
                     }
                 }
