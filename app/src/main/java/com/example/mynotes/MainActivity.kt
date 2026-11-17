@@ -35,9 +35,26 @@ import java.util.UUID
 private data class Note(val id: String, val title: String, val body: String)
 
 class MainActivity : ComponentActivity() {
+
+    private var saveNotesAction: (() -> Unit)? = null
+
+    fun registerSaveAction(action: () -> Unit) {
+        saveNotesAction = action
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent { NotesScreen(this) }
+    }
+
+    override fun onStop() {
+        saveNotesAction?.invoke()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        saveNotesAction?.invoke()
+        super.onDestroy()
     }
 }
 
@@ -178,15 +195,14 @@ private fun NotesScreen(context: Context) {
                         if (draft.isEmpty()) Text("Start writing...", color = Color.LightGray)
                         BasicTextField(
                             value = draft,
-                           onValueChange = {
+     onValueChange = {
     draft = it
     dirty = true
     toast = ""
+
     val i = notes.indexOfFirst { note -> note.id == selectedId }
     if (i >= 0) {
         notes[i] = notes[i].copy(body = it)
-        persist(context, notes)
-        dirty = false
     }
 },
                             modifier = Modifier.fillMaxSize(),
