@@ -120,14 +120,22 @@ DisposableEffect(Unit) {
         if (showMessage) toast = "Saved"
     }
 
-    fun switchNow(id: String) {
-        if (dirty) saveCurrent(showMessage = false)
+   fun switchNow(id: String) {
+    if (id == selectedId) return
 
-        val n = notes.firstOrNull { it.id == id } ?: return
-        selectedId = id
-        draft = n.body
-        dirty = false
+    val currentIndex = notes.indexOfFirst { it.id == selectedId }
+
+    if (currentIndex >= 0) {
+        notes[currentIndex] = notes[currentIndex].copy(body = draft)
+        persist(context, notes.toList())
     }
+
+    val n = notes.firstOrNull { it.id == id } ?: return
+
+    selectedId = id
+    draft = n.body
+    dirty = false
+}
 
     fun askSwitch(id: String) {
         if (id == selectedId) return
