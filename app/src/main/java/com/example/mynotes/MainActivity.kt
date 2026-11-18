@@ -91,8 +91,20 @@ private fun NotesScreen(context: Context) {
     val activity = context as? MainActivity
   
 
+
+    var selectedId by remember { mutableStateOf(notes.first().id) }
+  LaunchedEffect(selectedId) {
+    focusManager.clearFocus(force = true)
+}
+    var draft by remember { mutableStateOf(notes.first().body) }
 DisposableEffect(Unit) {
     activity?.registerSaveAction {
+        val i = notes.indexOfFirst { it.id == selectedId }
+
+        if (i >= 0) {
+            notes[i] = notes[i].copy(body = draft)
+        }
+
         persist(context, notes.toList())
     }
 
@@ -100,11 +112,6 @@ DisposableEffect(Unit) {
         activity?.registerSaveAction {}
     }
 }
-    var selectedId by remember { mutableStateOf(notes.first().id) }
-  LaunchedEffect(selectedId) {
-    focusManager.clearFocus(force = true)
-}
-    var draft by remember { mutableStateOf(notes.first().body) }
     var dirty by remember { mutableStateOf(false) }
     var pendingSwitch by remember { mutableStateOf<String?>(null) }
     var showUnsaved by remember { mutableStateOf(false) }
