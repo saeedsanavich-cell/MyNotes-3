@@ -1,5 +1,6 @@
 package com.example.mynotes
 
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.foundation.ExperimentalFoundationApi
