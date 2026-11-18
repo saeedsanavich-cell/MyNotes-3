@@ -86,8 +86,12 @@ private fun persist(context: Context, notes: List<Note>) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun NotesScreen(context: Context) {
+    val focusManager = LocalFocusManager.current
     val notes = remember { mutableStateListOf<Note>().apply { addAll(loadNotes(context)) } }
     val activity = context as? MainActivity
+    LaunchedEffect(selectedId) {
+    focusManager.clearFocus(force = true)
+}
 
 DisposableEffect(Unit) {
     activity?.registerSaveAction {
@@ -216,10 +220,7 @@ DisposableEffect(Unit) {
     dirty = true
     toast = ""
 
-    val i = notes.indexOfFirst { note -> note.id == selectedId }
-    if (i >= 0) {
-        notes[i] = notes[i].copy(body = it)
-    }
+ 
 },
                             modifier = Modifier.fillMaxSize(),
                            textStyle = TextStyle(
