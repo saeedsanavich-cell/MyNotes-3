@@ -89,9 +89,7 @@ private fun NotesScreen(context: Context) {
     val focusManager = LocalFocusManager.current
     val notes = remember { mutableStateListOf<Note>().apply { addAll(loadNotes(context)) } }
     val activity = context as? MainActivity
-    LaunchedEffect(selectedId) {
-    focusManager.clearFocus(force = true)
-}
+  
 
 DisposableEffect(Unit) {
     activity?.registerSaveAction {
@@ -103,6 +101,9 @@ DisposableEffect(Unit) {
     }
 }
     var selectedId by remember { mutableStateOf(notes.first().id) }
+  LaunchedEffect(selectedId) {
+    focusManager.clearFocus(force = true)
+}
     var draft by remember { mutableStateOf(notes.first().body) }
     var dirty by remember { mutableStateOf(false) }
     var pendingSwitch by remember { mutableStateOf<String?>(null) }
